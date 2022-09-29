@@ -204,6 +204,7 @@ export const Deletedata = async (req, res) => {
 // ---------------------------33-----update------------33---------------------------
 
 export const Updatedata = async (req, res) => {
+    console.log("update")
     try {
         let jsondata = {};
   
