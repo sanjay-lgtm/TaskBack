@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../Middleware/FileUpload';
-import { dataList, datasend, getDataById ,DataSearch,videoUpload,payment} from '../controller/data';
+import { dataList, datasend, getDataById ,DataSearch,Updatedata,payment,Deletedata} from '../controller/data';
 export const dataRouter = express.Router();
 
 
@@ -23,3 +23,7 @@ dataRouter.post("/dataget",dataList);
 dataRouter.get("/datagetbyid",getDataById);
 
 dataRouter.route("/payments").post(payment);
+
+dataRouter.delete("/Deletedata/:_id",Deletedata)
+
+dataRouter.put("/updatedata",Updatedata)

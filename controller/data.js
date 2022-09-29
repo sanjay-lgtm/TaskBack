@@ -8,13 +8,13 @@ const paginate = require("express-paginate");
 
 export const datasend = async (req, res) => {
     try {
-        console.log(req.body.name,req.body.image)
+        console.log(req.body.name, req.body.image)
         const addData = new data({
             name: req.body.name,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
-            price:req.body.price,
-            image:req.file.filename,
+            price: req.body.price,
+            image: req.file.filename,
         });
         const allData = await addData.save();
         if (allData) {
@@ -58,33 +58,15 @@ export const dataList = async (req, res) => {
 }
 
 // -----------------------getDatabyId---------------------------------------------------
+
 export const getDataById = async (req, res) => {
-
-    try {
-        var _id = req.body._id
-        console.log(_id)
-        const id = await data.findById(_id);
-        console.log(id)
-        res.send({
-            status: true,
-            message: "Data details get by id successfully",
-            result: id
-        })
-    }
-    catch (e) {
-        return res.send({
-            status: false,
-            message: "error",
-            result: e
-        })
-    }
-
+    const { id } = req.query;
+    console.log(id);
+    const result = await data.findById(id);
+    return res.send(
+        { status: true, message: "success", code: 200, result: result }
+    )
 }
-
-
-
-
-
 
 
 // -------------------------Searching-------------------------------
@@ -143,7 +125,7 @@ export const DataSearch = async (req, res) => {
 
 export const payment = async (req, res) => {
 
-const {name,price}= req.body;
+    const { name, price } = req.body;
 
     // console.log("req.body",req.body)
 
@@ -189,10 +171,67 @@ const {name,price}= req.body;
 
 }
 
+// --------------------------------deletelist---------------------------------
+
+export const Deletedata = async (req, res) => {
+    const { _id } = req.params
+    try {
+        data.deleteOne({ _id: mongoose.Types.ObjectId(_id) },
+            (error, result) => {
+                if (error) {
+                    res.send({
+                        status: 404,
+                        message: "ERROR",
+                        result: error
+                    })
+                }
+                else {
+                    res.send({
+                        status: 200,
+                        message: "Success",
+                        result: result
+                    })
+                }
+            }
+        )
+    }
+    catch (e) {
+        throw e
+    }
+}
 
 
+// ---------------------------33-----update------------33---------------------------
 
-
-
-
-
+export const Updatedata = async (req, res) => {
+    try {
+        let jsondata = {};
+  
+        if (req.body.name) {
+            jsondata.name = req.body.name;
+        }
+        if (req.body.email) {
+            jsondata.email = req.body.email;
+        }
+        if (req.body.price) {
+            jsondata.price = req.body.price;
+        }
+        if (req.body.image) {
+            jsondata.price = req.body.image;
+        }
+        data.updateOne({ _id: req.body._id },
+            { $set: jsondata },
+            { new: true },
+            (err, updatedlist) => {
+                if (err) {
+                    res.send({ status: 404, message: "Failed", result: err })
+                } else {
+                    res.send({ status: 200, message: "Updated Successfully", result: updatedlist })
+                }
+            })
+    }
+    catch (e) {
+        throw e
+    }
+  }
+  
